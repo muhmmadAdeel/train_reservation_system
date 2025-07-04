@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Train Schedule</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 90%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background-color: #fff;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <h1>Train Schedule</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Train Number</th>
+                <th>Train Name</th>
+                <th>source Station</th>
+                <th>destination Station</th>
+                <th>Arrival Time</th>
+            </tr>
+        </thead>
+        <tbody id="trainData">
+            <!-- Data loads here -->
+        </tbody>
+    </table>
+    <script>
+    fetch('http://localhost:5500/api/train/all')
+    //fetch('train_data.json') 
+    .then(response => response.json())
+    .then(data => {
+        console.log('Fetched data:', data);  // Check the data in the console
+
+        if (Array.isArray(data)) {
+            const tbody = document.getElementById('trainData');
+            data.forEach(train => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${train.train_id}</td>
+                    <td>${train.name}</td>
+                    <td>${train.source_station}</td>
+                    <td>${train.destination_station}</td>
+                    <td>${train.arrival_time}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        } else {
+            console.error('The data is not an array:', data);
+        }
+    })
+    .catch(error => {
+        console.error('Error loading train data:', error);
+    });
+
+</script>
+
+</body>
+</html>

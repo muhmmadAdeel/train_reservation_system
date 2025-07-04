@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Form</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #fef6e4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .form-container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      width: 350px;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 600;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 10px;
+      background-color: #ff7f50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #ff5a2c;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Admin Login</h2>
+    <form id="adminForm">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" required>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required>
+      
+      <button type="submit">Login</button>
+    </form>
+  </div>
+  <script>
+    document.getElementById('adminForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+    
+        const data = {
+            username: document.getElementById('username').value,
+            password: document.getElementById('password').value
+        };
+    
+        try {
+            const response = await fetch('http://localhost:5500/api/admin/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+    
+            const result = await response.json();
+            if (response.ok) {
+                window.location.href = 'admin_dashboard.html';
+            } else {
+                alert(result.message || 'Login failed');
+            }
+        } catch (error) {
+            alert('Error: ' + error);
+        }
+    });
+    </script>
+</body>
+</html>

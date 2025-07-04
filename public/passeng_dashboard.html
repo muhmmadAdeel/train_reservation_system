@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Passenger Dashboard - Train Reservation System</title>
+  <style>
+    /* Base Styles with New Theme */
+    :root {
+      --primary: #FF4D4D;
+      --secondary: #2B2B2B;
+      --accent: #00E676;
+      --text: #F5F5F5;
+      --highlight: #FFD700;
+      --shadow: rgba(0, 0, 0, 0.3);
+      --glass: rgba(43, 43, 43, 0.7);
+      --track: #333;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Montserrat', 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1A1A2E, #16213E);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Passenger Animation Elements */
+    .passenger-animation {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 80px;
+      background: repeating-linear-gradient(
+        90deg,
+        var(--track) 0px,
+        var(--track) 40px,
+        var(--highlight) 40px,
+        var(--highlight) 80px
+      );
+      z-index: -1;
+      opacity: 0.3;
+    }
+
+    .passenger {
+      position: fixed;
+      bottom: 60px;
+      left: -150px;
+      width: 150px;
+      height: 100px;
+      z-index: -1;
+      animation: passenger-walk 20s linear infinite;
+    }
+
+    .passenger:before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50px;
+      width: 40px;
+      height: 60px;
+      background: var(--primary);
+      border-radius: 20px 20px 0 0;
+    }
+
+    .passenger:after {
+      content: '';
+      position: absolute;
+      top: 10px;
+      left: 55px;
+      width: 30px;
+      height: 30px;
+      background: #FFD700;
+      border-radius: 50%;
+      box-shadow: 0 0 0 5px rgba(255, 215, 0, 0.3);
+    }
+
+    @keyframes passenger-walk {
+      0% { transform: translateX(-150px); }
+      100% { transform: translateX(calc(100vw + 150px)); }
+    }
+
+    /* Luggage Animation */
+    .luggage {
+      position: fixed;
+      bottom: 40px;
+      right: -100px;
+      width: 80px;
+      height: 50px;
+      background: #00adb5;
+      border-radius: 10px;
+      z-index: -1;
+      animation: luggage-move 25s linear infinite 5s;
+    }
+
+    .luggage:before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: 10px;
+      width: 60px;
+      height: 10px;
+      background: #007b83;
+      border-radius: 5px;
+    }
+
+    @keyframes luggage-move {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(calc(-100vw - 100px)); }
+    }
+
+    /* Dashboard Layout */
+    .dashboard-container {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    .sidebar {
+      width: 250px;
+      background: var(--glass);
+      padding: 30px 20px;
+      color: var(--text);
+      backdrop-filter: blur(10px);
+      box-shadow: 4px 0 15px var(--shadow);
+      border-right: 1px solid rgba(255, 77, 77, 0.2);
+      z-index: 1;
+    }
+
+    .sidebar h2 {
+      margin-bottom: 30px;
+      font-size: 24px;
+      color: var(--highlight);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 10px;
+    }
+
+    .sidebar nav ul {
+      list-style: none;
+    }
+
+    .sidebar nav ul li {
+      margin: 20px 0;
+      transition: transform 0.3s;
+    }
+
+    .sidebar nav ul li:hover {
+      transform: translateX(5px);
+    }
+
+    .sidebar nav ul li a {
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      display: block;
+      transition: all 0.3s;
+    }
+
+    .sidebar nav ul li a:hover {
+      color: var(--highlight);
+      background: rgba(255, 77, 77, 0.2);
+      box-shadow: 0 0 10px rgba(255, 77, 77, 0.2);
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+      background: var(--glass);
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px var(--shadow);
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 77, 77, 0.2);
+    }
+
+    header h1 {
+      color: var(--highlight);
+      font-size: 28px;
+      letter-spacing: 1px;
+    }
+
+    .logout-btn {
+      background: linear-gradient(145deg, var(--primary), #D84343);
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-size: 14px;
+      box-shadow: 0 4px 8px rgba(255, 77, 77, 0.3);
+    }
+
+    .logout-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(255, 77, 77, 0.4);
+      background: linear-gradient(145deg, #FF5E5E, #E95454);
+    }
+
+    /* Stats Cards */
+    .stats-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+
+    .card {
+      background: var(--glass);
+      border-radius: 12px;
+      box-shadow: 0 8px 20px var(--shadow);
+      padding: 25px;
+      text-align: center;
+      transition: all 0.4s ease;
+      border: 1px solid rgba(255, 77, 77, 0.2);
+      backdrop-filter: blur(5px);
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 25px rgba(255, 77, 77, 0.3);
+      border-color: var(--primary);
+    }
+
+    .card h3 {
+      font-size: 18px;
+      color: var(--highlight);
+      margin-bottom: 15px;
+      letter-spacing: 1px;
+    }
+
+    .card p {
+      font-size: 32px;
+      font-weight: bold;
+      color: var(--accent);
+      text-shadow: 0 0 10px rgba(0, 230, 118, 0.3);
+    }
+
+    /* Train Menu Styles */
+    .train-menu {
+      background: var(--glass);
+      border-radius: 12px;
+      box-shadow: 0 8px 20px var(--shadow);
+      padding: 30px;
+      display: none;
+      border: 1px solid rgba(255, 77, 77, 0.2);
+      backdrop-filter: blur(5px);
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .train-menu h2 {
+      margin-bottom: 25px;
+      color: var(--highlight);
+      text-align: center;
+      letter-spacing: 1px;
+      font-size: 24px;
+    }
+
+    .train-menu table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    .train-menu th {
+      background: linear-gradient(145deg, var(--primary), #D84343);
+      color: #fff;
+      padding: 15px;
+      text-align: center;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .train-menu td {
+      padding: 12px 15px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text);
+    }
+
+    .train-menu tr:nth-child(even) {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .train-menu tr:hover {
+      background: rgba(255, 77, 77, 0.1);
+      cursor: pointer;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 992px) {
+      .dashboard-container {
+        flex-direction: column;
+      }
+      
+      .sidebar {
+        width: 100%;
+        padding: 20px;
+      }
+      
+      .main-content {
+        padding: 30px;
+      }
+      
+      .stats-cards {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+      
+      .train-menu table, 
+      .train-menu thead, 
+      .train-menu tbody, 
+      .train-menu th, 
+      .train-menu td, 
+      .train-menu tr {
+        display: block;
+      }
+
+      .train-menu thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+      }
+
+      .train-menu tr {
+        margin-bottom: 15px;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .train-menu td {
+        padding-left: 50%;
+        position: relative;
+        text-align: left;
+        border: none;
+      }
+
+      .train-menu td::before {
+        position: absolute;
+        top: 12px;
+        left: 15px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+        color: var(--highlight);
+      }
+
+      .train-menu td:nth-of-type(1)::before { content: "Train No"; }
+      .train-menu td:nth-of-type(2)::before { content: "Train Name"; }
+      .train-menu td:nth-of-type(3)::before { content: "Source"; }
+      .train-menu td:nth-of-type(4)::before { content: "Destination"; }
+      .train-menu td:nth-of-type(5)::before { content: "Departure"; }
+      .train-menu td:nth-of-type(6)::before { content: "Arrival"; }
+    }
+
+    @media (max-width: 480px) {
+      .main-content {
+        padding: 20px;
+      }
+      
+      .stats-cards {
+        grid-template-columns: 1fr;
+      }
+      
+      .passenger, .luggage {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Animation Elements -->
+  <div class="passenger-animation"></div>
+  <div class="passenger"></div>
+  <div class="luggage"></div>
+
+  <div class="dashboard-container">
+    <aside class="sidebar">
+      <h2>Passenger</h2>
+      <nav>
+        <ul>
+          <li><a href="#" onclick="showDashboard()">Dashboard</a></li>
+          <li><a href="#" onclick="showTrainMenu()">View Trains</a></li>
+          <li><a href="#" onclick="window.location.href='ticket.html'">Book Ticket</a></li>
+          <li><a href="#" onclick="window.location.href='myTicket.html'">my Ticket</a></li>
+        </ul>
+      </nav>
+    </aside>
+    <main class="main-content">
+      <header>
+        <h1>Welcome, Passenger</h1>
+        <button class="logout-btn" onclick="window.location.href='dashboard.html'">Logout</button>
+        <!-- <li><a href="#" >Logout</a></li> -->
+      </header>
+      <section id="content-area">
+        <div class="stats-cards">
+          <div class="card">
+            <h3>My Bookings</h3>
+            <p>8</p>
+          </div>
+          <div class="card">
+            <h3>Upcoming Trips</h3>
+            <p>3</p>
+          </div>
+          <div class="card">
+            <h3>Cancelled Tickets</h3>
+            <p>1</p>
+          </div>
+          <div class="card">
+            <h3>Available Trains</h3>
+            <p>110+</p>
+          </div>
+        </div>
+      </section>
+      <h1>Train Schedule</h1>
+
+    <div id="content-area">
+        <button onclick="showTrainMenu()">Show Train Schedule</button>
+    </div>
+
+    <section class="train-menu" id="train-menu" style="display: none;">
+        <h2>Pakistan Railways - Train Schedule</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Train ID</th>
+                    <th>Train Name</th>
+                    <th>Source Station</th>
+                    <th>Destination Station</th>
+                    <th>Arrival Time</th>
+                </tr>
+            </thead>
+            <tbody id="trainData">
+                <!-- Data will be populated here -->
+            </tbody>
+        </table>
+    </section>
+    </main>
+  </div>
+
+  <script>
+    function showDashboard() {
+      const contentArea = document.getElementById('content-area');
+      const trainMenu = document.getElementById('train-menu');
+      contentArea.style.display = 'block';
+      trainMenu.style.display = 'none';
+    }
+
+    function showTrainMenu() {
+            const contentArea = document.getElementById('content-area');
+            const trainMenu = document.getElementById('train-menu');
+
+            contentArea.style.display = 'none';
+            trainMenu.style.display = 'block';
+
+            fetchTrainData(); 
+        }
+
+       
+        function fetchTrainData() {
+            fetch('http://localhost:5500/api/train/all')
+                .then(response => response.json())
+                .then(data => {
+                    if (Array.isArray(data)) {
+                        const tbody = document.getElementById('trainData');
+                        tbody.innerHTML = ''; 
+
+                       
+                        data.forEach(train => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${train.train_id}</td>
+                                <td>${train.name}</td>
+                                <td>${train.source_station}</td>
+                                <td>${train.destination_station}</td>
+                                <td>${train.arrival_time}</td>
+                            `;
+                            tbody.appendChild(row);
+                        });
+                    } else {
+                        console.error('The data is not an array:', data);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading train data:', error);
+                });
+        }
+  </script>
+</body>
+</html>
+
+
+

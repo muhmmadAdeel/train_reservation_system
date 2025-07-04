@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Train Form</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #edf6f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .form-container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      width: 350px;
+    }
+    h2 {
+      text-align: center;
+      color: #023047;
+    }
+    label {
+      margin-top: 15px;
+      display: block;
+      font-weight: 600;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 10px;
+      background-color: #219ebc;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #126782;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Train Details</h2>
+    <form id="addTrain">
+      <label for="trainName">Train Name</label>
+      <input type="text" id="trainName" required>
+
+      <label for="source">Source Station</label>
+      <input type="text" id="source" required>
+
+      <label for="destination">Destination Station</label>
+      <input type="text" id="destination" required>
+
+      <label for="departTime">Departure Time</label>
+      <input type="time" id="departTime" required>
+
+      <button type="submit">Save Train</button>
+    </form>
+  </div>
+  <script>
+    document.getElementById('addTrain').addEventListener('submit', async (e) => {
+        e.preventDefault();
+    
+          const data = {
+            trainName: document.getElementById('trainName').value,
+            sourceStation: document.getElementById('source').value, // ✅ Corrected
+            destination: document.getElementById('destination').value,
+            departureTime: document.getElementById('departTime').value
+          };
+
+    
+        try {
+            const response = await fetch('http://localhost:5500/api/train/add', {
+            
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data)
+          });
+      
+          const result = await response.text();
+      
+          if (response.ok) {
+              alert(result);
+               
+          } else {
+              alert(' failed: ' + result);
+          }
+      } catch (error) {
+          alert('Error: ' + error);
+      }
+      
+    });
+    </script>
+</body>
+</html>

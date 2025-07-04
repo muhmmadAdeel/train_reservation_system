@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Staff Form</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #e7f0fd;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .form-container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      width: 350px;
+    }
+    .form-container h2 {
+      text-align: center;
+      color: #2b2d42;
+    }
+    label {
+      margin-top: 15px;
+      display: block;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-top: 5px;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 10px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Staff Details</h2>
+    <!-- <form> -->
+    <form id="staffForm">
+     
+
+      <label for="username">Username</label>
+      <input type="text" id="username" required>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" required>
+
+      
+      <button type="submit">login</button>
+    </form>
+  </div>
+  <script>
+    document.getElementById('staffForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+    
+        const data = {
+            
+            username: document.getElementById('username').value,
+            password: document.getElementById('password').value
+        };
+    
+        try {
+            const response = await fetch('http://localhost:5500/api/staff/login', {
+            
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data)
+          });
+      
+          const result = await response.text();
+      
+          if (response.ok) {
+              alert(result);
+              window.location.href = 'staffDashboard.html'; 
+          } else {
+              alert('login failed: ' + result);
+          }
+      } catch (error) {
+          alert('Error: ' + error);
+      }
+      
+    });
+    </script>
+</body>
+</html>

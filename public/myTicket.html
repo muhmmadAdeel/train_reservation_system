@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Train Schedule</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 90%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background-color: #fff;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>My Ticket</h1>
+    <label for="userId">Enter Your ID: </label>
+    <input type="text" id="userId" placeholder="Enter your ID" />
+    <button onclick="fetchTicketData()">Get My Tickets</button>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ticket ID</th>
+                <th>train ID</th>
+                <th>booking date</th>
+                <th>travel date</th>
+                <th>seat Number</th>
+            </tr>
+        </thead>
+        <tbody id="ticketdata">
+            <!-- Data loads here -->
+        </tbody>
+    </table>
+
+    <script>
+    function fetchTicketData() {
+        const userId = document.getElementById('userId').value;
+        if (!userId) {
+            alert('Please enter your ID');
+            return;
+        }
+
+        fetch(`http://localhost:5500/api/ticket/myTicket/${userId}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Fetched data:', data);
+
+                if (Array.isArray(data)) {
+                    const tbody = document.getElementById('ticketdata');
+                    tbody.innerHTML = ''; 
+
+                    data.forEach(ticket => { 
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${ticket.ticket_id}</td>  <!-- Corrected to use 'ticket' -->
+                            <td>${ticket.train_id}</td>   <!-- Corrected to use 'ticket' -->
+                            <td>${ticket.booking_date}</td> <!-- Corrected to use 'ticket' -->
+                            <td>${ticket.travel_date}</td>  <!-- Corrected to use 'ticket' -->
+                            <td>${ticket.seat_no}</td>  <!-- Corrected to use 'ticket' -->
+                        `;
+                        tbody.appendChild(row);
+                    });
+                } else {
+                    console.error('The data is not an array:', data);
+                }
+            })
+            .catch(error => {
+                console.error('Error loading ticket data:', error);
+            });
+    }
+    </script>
+
+</body>
+
+
+</html>

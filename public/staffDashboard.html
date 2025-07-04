@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Staff Dashboard</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      height: 100vh;
+      background: linear-gradient(-45deg, #74ebd5, #9face6, #74ebd5, #9face6);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      display: flex;
+      min-height: 100vh;
+      backdrop-filter: blur(5px);
+    }
+
+    .sidebar {
+      width: 250px;
+      background: rgba(44, 62, 80, 0.9);
+      color: white;
+      padding: 30px 20px;
+      box-shadow: 2px 0 15px rgba(0, 0, 0, 0.3);
+      animation: slideIn 1.2s ease-out;
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 24px;
+      letter-spacing: 1px;
+      border-bottom: 2px solid #ecf0f1;
+      padding-bottom: 10px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+    }
+
+    .sidebar ul li {
+      margin: 20px 0;
+    }
+
+    .sidebar ul li a {
+      text-decoration: none;
+      color: white;
+      font-size: 17px;
+      display: block;
+      padding: 12px 15px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar ul li a:hover {
+      background: #1abc9c;
+      transform: translateX(5px);
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 60px;
+      color: #2c3e50;
+      animation: fadeIn 1.2s ease-in;
+      background: rgba(255, 255, 255, 0.85);
+      margin: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.1);
+    }
+
+    .main-content h1 {
+      font-size: 36px;
+      margin-bottom: 20px;
+      animation: slideUp 1s ease-in-out;
+    }
+
+    .main-content p {
+      font-size: 18px;
+      color: #34495e;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        text-align: center;
+      }
+
+      .main-content {
+        margin: 0;
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav class="sidebar">
+      <h2>Staff Dashboard</h2>
+      <ul>
+        <li><a href="pasengReg.html">Register Passenger</a></li>
+        <li><a href="ticket.html">Book Ticket</a></li>
+        <li><a ></a>Generate Report</a></li>
+        <li><a >Generate Disclaimer</a></li>
+      </ul>
+    </nav>
+
+    <main class="main-content">
+      <h1>Welcome, Staff Member</h1>
+      <p>Select an action from the sidebar to get started. This dashboard allows you to manage passengers, book tickets, and generate important documents.</p>
+    </main>
+  </div>
+
+  <script>
+    function generateFile(type) {
+      const content = type === 'report' 
+        ? 'Passenger Report\n-------------------\nDate: ' + new Date().toLocaleDateString()
+        : 'Disclaimer\n-------------------\nThis is a system-generated disclaimer.';
+
+      const blob = new Blob([content], { type: 'text/plain' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = type + ".txt";
+      a.click();
+    }
+  </script>
+</body>
+</html>
